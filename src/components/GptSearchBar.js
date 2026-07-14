@@ -24,6 +24,7 @@ const GptSearchBar = () => {
   };
 
   const handleGptSearchClick = async () => {
+    console.log(searchText.current.value);
     // Make an API call to GPT API and get Movie Results
 
     const gptQuery =
@@ -40,11 +41,21 @@ const GptSearchBar = () => {
       // TODO: Write Error Handling
     }
 
+    console.log(gptResults.choices?.[0]?.message?.content);
+
+    // Andaz Apna Apna, Hera Pheri, Chupke Chupke, Jaane Bhi Do Yaaro, Padosan
     const gptMovies = gptResults.choices?.[0]?.message?.content.split(',');
 
+    // ["Andaz Apna Apna", "Hera Pheri", "Chupke Chupke", "Jaane Bhi Do Yaaro", "Padosan"]
+
+    // For each movie I will search TMDB API
+
     const promiseArray = gptMovies.map(movie => searchMovieTMDB(movie));
+    // [Promise, Promise, Promise, Promise, Promise]
 
     const tmdbResults = await Promise.all(promiseArray);
+
+    console.log(tmdbResults);
 
     dispatch(
       addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults }),
@@ -52,9 +63,9 @@ const GptSearchBar = () => {
   };
 
   return (
-    <div className="pt-[10%] flex justify-center">
+    <div className="pt-[35%] md:pt-[10%] flex justify-center">
       <form
-        className=" w-1/2 bg-black grid grid-cols-12"
+        className="w-full md:w-1/2 bg-black grid grid-cols-12"
         onSubmit={e => e.preventDefault()}
       >
         <input
